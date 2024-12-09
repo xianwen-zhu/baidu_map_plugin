@@ -1,0 +1,60 @@
+# 定义全局 iOS 平台版本
+platform :ios, '12.0'
+
+# 禁用 CocoaPods 分析网络统计数据（提升构建速度）
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
+
+# 指定项目的 Build Configuration
+project 'Runner', {
+  'Debug' => :debug,
+  'Profile' => :release,
+  'Release' => :release,
+}
+
+# 动态解析 Flutter SDK 的路径
+def flutter_root
+  generated_xcode_build_settings_path = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'), __FILE__)
+  unless File.exist?(generated_xcode_build_settings_path)
+    raise "#{generated_xcode_build_settings_path} must exist. If you're running pod install manually, make sure flutter pub get is executed first"
+  end
+
+  File.foreach(generated_xcode_build_settings_path) do |line|
+    matches = line.match(/FLUTTER_ROOT\=(.*)/)
+    return matches[1].strip if matches
+  end
+  raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig, then run flutter pub get"
+end
+
+# 引入 Flutter 的 CocoaPods 配置文件
+require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
+
+# 设置 Flutter 的 CocoaPods 环境
+flutter_ios_podfile_setup
+
+target 'Runner' do
+  # 使用动态框架和模块化头文件
+  use_frameworks! :linkage => :static
+  use_modular_headers!
+
+  # 安装 Flutter 和插件依赖
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+
+  # 测试目标
+  target 'RunnerTests' do
+    inherit! :search_paths
+  end
+end
+
+# 修复 BaiduMapKit 和其他静态库的问题
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+
+    # 解决静态库架构冲突的问题
+    if ['BaiduMapKit'].include? target.name
+      target.build_configurations.each do |config|
+        config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+      end
+    end
+  end
+end

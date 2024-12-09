@@ -1,23 +1,27 @@
-#
-# To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html.
-# Run `pod lib lint baidu_map_plugin.podspec` to validate before publishing.
-#
 Pod::Spec.new do |s|
   s.name             = 'baidu_map_plugin'
   s.version          = '0.0.1'
-  s.summary          = 'A new Flutter plugin project.'
+  s.summary          = 'A Flutter plugin for Baidu Map integration.'
   s.description      = <<-DESC
-A new Flutter plugin project.
+A Flutter plugin to integrate Baidu Map SDK with native iOS and Android platforms.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://github.com/xianwen-zhu/baidu_map_plugin'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'Xianwen Zhu' => 'fmxianwen@gmail.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
-  s.dependency 'Flutter'
-  s.platform = :ios, '11.0'
+  s.source_files     = 'Classes/**/*'
+  s.resources = 'Assets/**/*'
+  s.resource_bundles = {'Image_Picker'=>['Assets/*.png']}
+  s.dependency       'Flutter'
+  s.platform         = :ios, '12.0' # 根据需求调整为更高版本
+  s.dependency       'BaiduMapKit', '~> 6.0'
+  s.dependency       'BMKLocationKit', '~> 2.1.2'
 
-  # Flutter.framework does not contain a i386 slice.
-  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
+  # 确保模块定义并排除不必要的架构
+  s.pod_target_xcconfig = {
+    'DEFINES_MODULE' => 'YES',
+    'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386 arm64'
+  }
+
   s.swift_version = '5.0'
 end
