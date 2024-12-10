@@ -21,6 +21,13 @@ abstract class BaiduMapPluginPlatform extends PlatformInterface {
   /// 初始化百度地图
   Future<void> initialize(String apiKey);
 
+  /// 放大地图
+  Future<void> zoomIn();
+  /// 缩小地图
+  Future<void> zoomOut();
+  /// 回到用户所在位置
+  Future<void> moveToUserLocation();
+
   /// 创建地图视图
   Widget createMapView();
 
@@ -29,10 +36,14 @@ abstract class BaiduMapPluginPlatform extends PlatformInterface {
     throw UnimplementedError('setCenter() has not been implemented.');
   }
 
-
   /// 添加地图标点
   Future<void> addMarker(double latitude, double longitude);
 
   /// 移除地图标点
   Future<void> removeMarker(double latitude, double longitude);
 }
+
+
+
+
+

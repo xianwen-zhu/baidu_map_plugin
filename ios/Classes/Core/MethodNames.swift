@@ -22,4 +22,10 @@ struct MethodNames {
     static let hideTrafficLayer = "hideTrafficLayer"
     // 地图点击事件
     static let onMapClick = "onMapClick"
+    //放大地图
+    static let zoomIn = "zoomIn"
+    //缩小地图
+    static let zoomOut = "zoomOut"
+    //回到当前所在位置
+    static let moveToUserLocation = "moveToUserLocation"
 }
